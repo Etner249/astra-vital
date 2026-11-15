@@ -1,6 +1,9 @@
 # Publication Report — ASTRA VITAL (NYXARA NOVA)
 
-Date: 2026-11-15 (America/Lima). The official NASA Space Apps form was **not** submitted (requires the owner's explicit action).
+Date: 2026-11-15 (America/Lima).
+
+## Official submission
+**Submitted for Judging** on the NASA Space Apps portal with the explicit authorization of the team (all four members agreed). Portal confirmation: "Project Submitted for Judging! Your certificate is now available in your Profile." — **Last Saved: 15 November 2026 16:35 · Last Submitted: 15 November 2026 16:35** (Trujillo local time), re-checked after reloading the page. Project page: https://www.spaceappschallenge.org/2026/find-a-team/nyxara-nova/?tab=project
 
 | # | Task | Status | URL / location | Evidence |
 |---|---|---|---|---|
@@ -15,6 +18,6 @@ Date: 2026-11-15 (America/Lima). The official NASA Space Apps form was **not** s
 | 9 | App ↔ source coherence | ✅ | — | Byte-identical deployed file (task 4). |
 
 ## Requires the owner
-1. Paste docs/SUBMISSION.md fields + links into the Space Apps project page and click **Submit for Judging** before 23:59 (Trujillo time).
+1. ~~Submit for Judging~~ — done 2026-11-15 16:35.
 2. Decide whether to delete the private duplicate draft of the 30 s video in YouTube Studio.
 3. Optional: FortiGuard web-filter classification for the GitHub Pages URL (recommended by Space Apps).
