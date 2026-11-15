@@ -4,6 +4,8 @@
 Challenge: *Create Health Monitoring Software for Astronauts on Space Missions*
 *We control the unseen.*
 
+**Live app:** https://etner249.github.io/astra-vital/ · **30 s demo:** https://youtu.be/lxITVao2RmQ · **Full presentation:** https://youtu.be/sz9qzXasEKc
+
 > Independent student prototype. **Not an official NASA product. Not a medical device** — it does not diagnose and does not replace flight surgeons or official protocols.
 
 ASTRA VITAL helps astronauts on long-duration missions log health indicators, compare them with documented references and with their own baseline, understand how they relate to NASA's five hazards of human spaceflight, and know what to do and when to involve the medical team, even with no link to Earth.

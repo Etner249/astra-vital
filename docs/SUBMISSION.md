@@ -2,7 +2,7 @@
 
 Team: **NYXARA NOVA** · Local event: Trujillo, Peru · Challenge: *Create Health Monitoring Software for Astronauts on Space Missions*
 
-> Before pasting, replace `[APP_URL]`, `[REPO_URL]` and `[DEMO_URL]` with the real public links (test them in a private/incognito window).
+> Before pasting, replace `https://etner249.github.io/astra-vital/`, `https://github.com/Etner249/astra-vital` and `https://youtu.be/lxITVao2RmQ` with the real public links (test them in a private/incognito window).
 
 ---
 
@@ -13,11 +13,11 @@ ASTRA VITAL — Intelligent Astronaut Health Monitoring System
 ASTRA VITAL is an offline-first web application that helps astronauts on long-duration missions monitor their own health when real-time support from Earth is limited. Crew members log key indicators (heart rate, blood pressure, SpO2, temperature, sleep, exercise, fatigue, mood and glucose). A transparent, rule-based engine compares each value with published reference ranges and with the astronaut's own baseline, detects trends, missing data and inconsistent entries, and explains every alert: what changed, why it matters, what to do and when to contact the flight surgeon. Each indicator is linked to NASA's five hazards of human spaceflight (RIDGE) through an interactive body map and a Mission Risk Center. Data is stored on board first and synchronized in batches when a communication window opens, with conflict control and recovery after link drops. The concept was tested with real NASA OSDR laboratory data from the Inspiration4 crew (OSD-575, OSD-569). It matters because, on the way to Mars, astronauts will carry much of the responsibility for noticing health changes early.
 
 ## 3. Link to Project Demo
-[DEMO_URL] — 29.6-second video (female English narration — AI-generated voice; English subtitles; real screen captures of the app).
+https://youtu.be/lxITVao2RmQ — 29.6-second video (female English narration — AI-generated voice; English subtitles; real screen captures of the app).
 
 ## 4. Link to Final Project
-App: [APP_URL]
-Source code and documentation: [REPO_URL]
+App: https://etner249.github.io/astra-vital/
+Source code and documentation: https://github.com/Etner249/astra-vital
 
 ## 5. Detailed Project Description
 
