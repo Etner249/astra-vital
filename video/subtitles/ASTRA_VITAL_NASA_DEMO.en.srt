@@ -1,0 +1,32 @@
+1
+00:00:00,200 --> 00:00:04,065
+Beyond Earth, monitoring astronaut health
+becomes a critical mission challenge.
+
+2
+00:00:04,435 --> 00:00:09,044
+Meet ASTRA VITAL, an intelligent health
+monitoring prototype by NYXARA NOVA.
+
+3
+00:00:09,414 --> 00:00:14,812
+It helps crew members track health indicators,
+understand trends, and identify concerning changes.
+
+4
+00:00:15,182 --> 00:00:19,936
+An explainable alert engine connects health
+monitoring with NASA's five spaceflight hazards.
+
+5
+00:00:20,306 --> 00:00:26,022
+Offline-first records support continuity,
+alongside documented Inspiration4 research data.
+
+6
+00:00:26,392 --> 00:00:27,055
+ASTRA VITAL.
+
+7
+00:00:27,075 --> 00:00:29,160
+Protecting human health beyond Earth.

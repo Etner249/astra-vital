@@ -1,0 +1,118 @@
+{
+ "short": [
+  {
+   "text": "Beyond Earth, monitoring astronaut health becomes a critical mission challenge.",
+   "spoken": "Beyond Earth, monitoring astronaut health becomes a critical mission challenge.",
+   "file": "audio/lines/short_01.wav",
+   "dur": 3.885,
+   "sr": 24000
+  },
+  {
+   "text": "Meet ASTRA VITAL, an intelligent health monitoring prototype by NYXARA NOVA.",
+   "spoken": "Meet Astra Vital, an intelligent health monitoring prototype by Nixara Nova.",
+   "file": "audio/lines/short_02.wav",
+   "dur": 4.629,
+   "sr": 24000
+  },
+  {
+   "text": "It helps crew members track health indicators, understand trends, and identify concerning changes.",
+   "spoken": "It helps crew members track health indicators, understand trends, and identify concerning changes.",
+   "file": "audio/lines/short_03.wav",
+   "dur": 5.418,
+   "sr": 24000
+  },
+  {
+   "text": "An explainable alert engine connects health monitoring with NASA's five spaceflight hazards.",
+   "spoken": "An explainable alert engine connects health monitoring with NASA's five spaceflight hazards.",
+   "file": "audio/lines/short_04.wav",
+   "dur": 4.774,
+   "sr": 24000
+  },
+  {
+   "text": "Offline-first records support continuity, alongside documented Inspiration4 research data.",
+   "spoken": "Offline-first records support continuity, alongside documented Inspiration Four research data.",
+   "file": "audio/lines/short_05.wav",
+   "dur": 5.735,
+   "sr": 24000
+  },
+  {
+   "text": "ASTRA VITAL. Protecting human health beyond Earth.",
+   "spoken": "Astra Vital. Protecting human health beyond Earth.",
+   "file": "audio/lines/short_06.wav",
+   "dur": 2.788,
+   "sr": 24000
+  }
+ ],
+ "ext": [
+  {
+   "text": "Human exploration beyond Earth brings extraordinary challenges. During long-duration space missions, understanding changes in astronaut health becomes essential.",
+   "spoken": "Human exploration beyond Earth brings extraordinary challenges. During long-duration space missions, understanding changes in astronaut health becomes essential.",
+   "file": "audio/lines/ext_01.wav",
+   "dur": 10.152,
+   "sr": 24000
+  },
+  {
+   "text": "Spaceflight can affect cardiovascular function, bone and muscle health, sleep, behavior, and the body's response to its environment. Astronauts need clear information to monitor these changes.",
+   "spoken": "Spaceflight can affect cardiovascular function, bone and muscle health, sleep, behavior, and the body's response to its environment. Astronauts need clear information to monitor these changes.",
+   "file": "audio/lines/ext_02.wav",
+   "dur": 12.55,
+   "sr": 24000
+  },
+  {
+   "text": "ASTRA VITAL is an offline-first astronaut health monitoring prototype developed by NYXARA NOVA for the NASA Space Apps Challenge 2026.",
+   "spoken": "Astra Vital is an offline-first astronaut health monitoring prototype developed by Nixara Nova for the NASA Space Apps Challenge twenty twenty-six.",
+   "file": "audio/lines/ext_03.wav",
+   "dur": 9.773,
+   "sr": 24000
+  },
+  {
+   "text": "The Mission Dashboard brings health records, recent measurements, alerts, and trends into one clear operational view.",
+   "spoken": "The Mission Dashboard brings health records, recent measurements, alerts, and trends into one clear operational view.",
+   "file": "audio/lines/ext_04.wav",
+   "dur": 6.953,
+   "sr": 24000
+  },
+  {
+   "text": "Crew members can record physiological and behavioral indicators, explore related body systems, and review their personal health history.",
+   "spoken": "Crew members can record physiological and behavioral indicators, explore related body systems, and review their personal health history.",
+   "file": "audio/lines/ext_05.wav",
+   "dur": 8.195,
+   "sr": 24000
+  },
+  {
+   "text": "Its transparent, rule-based engine identifies unusual changes and explains why an alert appears, what it means, and when medical attention should be considered.",
+   "spoken": "Its transparent, rule-based engine identifies unusual changes and explains why an alert appears, what it means, and when medical attention should be considered.",
+   "file": "audio/lines/ext_06.wav",
+   "dur": 10.356,
+   "sr": 24000
+  },
+  {
+   "text": "ASTRA VITAL connects health indicators with NASA's five human spaceflight hazards: space radiation, isolation, distance from Earth, gravity fields, and hostile environments.",
+   "spoken": "Astra Vital connects health indicators with NASA's five human spaceflight hazards: space radiation, isolation, distance from Earth, gravity fields, and hostile environments.",
+   "file": "audio/lines/ext_07.wav",
+   "dur": 11.418,
+   "sr": 24000
+  },
+  {
+   "text": "Designed for intermittent connectivity, it stores records locally and queues synchronization when a connection becomes available.",
+   "spoken": "Designed for intermittent connectivity, it stores records locally and queues synchronization when a connection becomes available.",
+   "file": "audio/lines/ext_08.wav",
+   "dur": 7.49,
+   "sr": 24000
+  },
+  {
+   "text": "The prototype also explores real laboratory datasets from NASA's Inspiration4 research, while keeping demonstration vital signs clearly labeled as synthetic.",
+   "spoken": "The prototype also explores real laboratory datasets from NASA's Inspiration Four research, while keeping demonstration vital signs clearly labeled as synthetic.",
+   "file": "audio/lines/ext_09.wav",
+   "dur": 10.67,
+   "sr": 24000
+  },
+  {
+   "text": "ASTRA VITAL. Clearer health insights for human exploration beyond Earth. NYXARA NOVA. We control the unseen.",
+   "spoken": "Astra Vital. Clearer health insights for human exploration beyond Earth. Nixara Nova. We control the unseen.",
+   "file": "audio/lines/ext_10.wav",
+   "dur": 7.547,
+   "sr": 24000
+  }
+ ]
+}

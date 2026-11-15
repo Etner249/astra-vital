@@ -1,0 +1,110 @@
+1
+00:00:00,600 --> 00:00:04,577
+Human exploration beyond Earth
+brings extraordinary challenges.
+
+2
+00:00:04,597 --> 00:00:10,732
+During long-duration space missions, understanding
+changes in astronaut health becomes essential.
+
+3
+00:00:11,652 --> 00:00:16,322
+Spaceflight can affect cardiovascular
+function, bone and muscle health,
+
+4
+00:00:16,342 --> 00:00:20,285
+sleep, behavior, and the body's
+response to its environment.
+
+5
+00:00:20,305 --> 00:00:24,183
+Astronauts need clear information
+to monitor these changes.
+
+6
+00:00:25,103 --> 00:00:30,153
+ASTRA VITAL is an offline-first
+astronaut health monitoring prototype
+
+7
+00:00:30,173 --> 00:00:34,856
+developed by NYXARA NOVA for the
+NASA Space Apps Challenge 2026.
+
+8
+00:00:35,776 --> 00:00:39,652
+The Mission Dashboard brings health
+records, recent measurements,
+
+9
+00:00:39,672 --> 00:00:42,709
+alerts, and trends into one clear operational view.
+
+10
+00:00:43,629 --> 00:00:47,494
+Crew members can record physiological
+and behavioral indicators,
+
+11
+00:00:47,514 --> 00:00:51,804
+explore related body systems, and
+review their personal health history.
+
+12
+00:00:52,724 --> 00:00:57,785
+Its transparent, rule-based engine
+identifies unusual changes and explains why
+
+13
+00:00:57,805 --> 00:01:03,060
+an alert appears, what it means, and when
+medical attention should be considered.
+
+14
+00:01:03,980 --> 00:01:09,404
+ASTRA VITAL connects health indicators
+with NASA's five human spaceflight hazards:
+
+15
+00:01:09,424 --> 00:01:15,378
+space radiation, isolation, distance from
+Earth, gravity fields, and hostile environments.
+
+16
+00:01:16,298 --> 00:01:20,082
+Designed for intermittent
+connectivity, it stores records locally
+
+17
+00:01:20,102 --> 00:01:23,768
+and queues synchronization when
+a connection becomes available.
+
+18
+00:01:24,688 --> 00:01:30,619
+The prototype also explores real laboratory
+datasets from NASA's Inspiration4 research,
+
+19
+00:01:30,639 --> 00:01:35,338
+while keeping demonstration vital
+signs clearly labeled as synthetic.
+
+20
+00:01:36,258 --> 00:01:37,100
+ASTRA VITAL.
+
+21
+00:01:37,120 --> 00:01:41,341
+Clearer health insights for
+human exploration beyond Earth.
+
+22
+00:01:41,361 --> 00:01:42,203
+NYXARA NOVA.
+
+23
+00:01:42,223 --> 00:01:43,785
+We control the unseen.

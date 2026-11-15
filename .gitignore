@@ -1,0 +1,7 @@
+video/parts/
+video/legacy/
+video/audio/mix_*.wav
+video/assets/music/*.wav
+__pycache__/
+*.tmp
+*.tmp.mp4
