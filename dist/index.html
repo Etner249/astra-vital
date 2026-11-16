@@ -181,6 +181,41 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
 .demo-acc .perm{font-size:12px;color:var(--muted);margin:7px 0 0}
 .demo-warning{margin-top:12px;border:1px solid #5a4a1d;border-left:4px solid var(--warn);background:#1d1708;color:#f5e2b0;border-radius:10px;padding:10px 12px;font-size:12.5px}
 @media (max-width:820px){.login-grid{grid-template-columns:1fr}.login-head{justify-content:center;text-align:center}}
+/* ---------- Login: project briefing (English) ---------- */
+.login-page .login-wrap{max-width:1180px}
+.login-grid{grid-template-columns:minmax(320px,420px) 1fr}
+.auth-col{display:grid;gap:16px;align-content:start}
+.pw{position:relative}.pw input{padding-right:64px}
+.pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:12px;padding:4px 9px;border-radius:6px;border:1px solid var(--line2);background:var(--panel2);color:var(--muted);cursor:pointer}
+.pw-toggle:hover,.pw-toggle:focus-visible{border-color:var(--cyan);color:var(--txt)}
+.eval-kicker.alt{background:#7aa7ff;color:#050b18}
+.briefing{align-self:start}
+.acc details{border:1px solid var(--line);border-radius:10px;background:var(--bg2);margin-bottom:8px;overflow:hidden}
+.acc details[open]{border-color:#1f4f6b}
+.acc summary{cursor:pointer;list-style:none;padding:11px 14px;font-weight:600;font-size:13.5px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:'+';color:var(--cyan);font-size:18px;line-height:1;transition:transform .2s}
+.acc details[open] summary::after{transform:rotate(45deg)}
+.acc summary:hover{background:var(--panel)}
+.acc summary:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.acc-body{padding:2px 16px 14px;font-size:13px;color:#cdd8ea;line-height:1.55}
+.acc-body p{margin:8px 0}.acc-body ul,.acc-body ol{margin:8px 0;padding-left:20px}.acc-body li{margin-bottom:3px}
+.acc-body h4{margin:12px 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.acc-body a{color:var(--accent);overflow-wrap:anywhere}
+.acc-body .note{border-left:3px solid var(--warn);background:#16120a;padding:7px 10px;border-radius:6px;color:#efdcb0}
+.acc-body .cols{columns:2;column-gap:28px}
+.acc-body .defs{display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:6px 14px;margin:8px 0}
+.acc-body .defs dt{font-weight:600;color:var(--txt)}.acc-body .defs dd{margin:0;color:var(--muted)}
+.acc-body .arch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.acc-body .arch>div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel)}
+.acc-body .arch p{margin:2px 0 0;color:var(--muted)}.acc-body .arch h4{margin:0}
+.realsim{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.realsim>div{border-radius:8px;padding:8px 12px;border:1px solid var(--line)}
+.realsim .real{border-color:#1e5a44;background:#0a1a14}.realsim .real h4{color:var(--ok)}
+.realsim .sim{border-color:#5a4a1d;background:#17130a}.realsim .sim h4{color:var(--warn)}
+.login-foot{text-align:center;margin-top:18px}
+@media (max-width:980px){.login-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.acc-body .cols{columns:1}.acc-body .defs,.acc-body .arch,.realsim{grid-template-columns:1fr}.login-head{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -492,7 +527,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
       const err = new Error(e.name === 'AbortError' ? 'The ground server did not answer in time.' : 'Cannot reach the ground server (Render).'); err.network = true; throw err;
     } finally { clearTimeout(timer); }
     let data = null; try { data = await res.json(); } catch (e) { data = null; }
-    if (res.status === 401 && !opts.anon) { endSession('Tu sesión expiró o el servidor se reinició. Inicia sesión nuevamente.'); }
+    if (res.status === 401 && !opts.anon) { endSession('Your session expired or the server restarted. Please sign in again.'); }
     if (!res.ok) { const err = new Error((data && data.error) || ('HTTP ' + res.status)); err.status = res.status; err.fields = data && data.fields; throw err; }
     return data;
   }
@@ -1253,53 +1288,125 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
     } catch (e) { failed(el, e); }
   };
 
-  /* ================= Session: NASA Evaluator Access login ================= */
+  /* ================= Session: NASA Evaluator Access login (public login experience is English-only) ================= */
+  const DEMO_EN = {
+    admin: { label: 'ADMINISTRATOR', can: 'Full access: astronaut, mission and measurement management, alert review, reports and audit log. User management is read-only for this public account.' },
+    doctor: { label: 'DOCTOR / SPECIALIST', can: 'Log and edit measurements, review and resolve alerts, reports. No astronaut, mission or user management.' },
+    operator: { label: 'OPERATOR', can: 'View all modules and log measurements. No editing, deleting or alert review.' }
+  };
+  const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text || url}</a>`;
+  const BRIEFING = [
+    ['overview', 'Project overview', `<p><b>ASTRA VITAL — Intelligent Astronaut Health Monitoring System</b><br>Team <b>NYXARA NOVA</b> · <i>We control the unseen.</i> · Trujillo, Peru</p>
+      <p>ASTRA VITAL is an offline-first astronaut health monitoring platform designed to support crew health awareness during long-duration space missions, particularly when communication delays limit real-time medical support from Earth.</p>
+      <p>It combines health data recording, transparent rule-based analysis, personal baselines, explainable alerts, mission risk assessment, offline data handling and medical ground-support visualization.</p>
+      <p class="note">It is an educational and research prototype, not a certified medical device.</p>`],
+    ['challenge', 'The challenge', `<p>NASA Space Apps Challenge 2026: <b>Create Health Monitoring Software for Astronauts on Space Missions</b>.</p>
+      <p>Long-duration missions expose astronauts to NASA's five hazards of human spaceflight:</p>
+      <ol><li>Space Radiation</li><li>Isolation and Confinement</li><li>Distance from Earth</li><li>Gravity Fields</li><li>Hostile and Closed Environments</li></ol>
+      <p>These hazards can affect cardiovascular health, bone and muscle integrity, sleep, behavior, immunity and overall crew well-being. ASTRA VITAL aims to help astronauts identify potential health changes early and understand when additional medical attention may be needed.</p>`],
+    ['solution', 'Our solution', `<ul class="cols"><li>Mission health dashboard</li><li>Manual health measurement recording</li><li>Personal baseline comparisons</li><li>Transparent rule-based health intelligence</li><li>Explainable alerts and recommended actions</li><li>Interactive human body visualization</li><li>NASA five-hazard risk mapping</li><li>Offline-first record handling</li><li>Simulated synchronization with a ground console</li><li>Medical reporting and data exports</li></ul>`],
+    ['indicators', 'Nine health indicators', `<ol class="cols"><li>Heart Rate</li><li>Blood Pressure</li><li>Blood Oxygen Saturation (SpO2)</li><li>Body Temperature</li><li>Sleep Duration</li><li>Exercise Duration</li><li>Fatigue — Samn-Perelli scale</li><li>Mood and Well-being</li><li>Blood Glucose</li></ol>
+      <p class="note">Measurements are entered manually by users. The prototype does not connect directly to medical sensors or wearable devices.</p>`],
+    ['modules', 'Application modules', `<h4>Ten original modules (NASA submission)</h4><dl class="defs">
+      <dt>Mission Dashboard</dt><dd>Overall health status, indicators, trends, active alerts, mission progress, communication status and daily health routine.</dd>
+      <dt>Log Measurement</dt><dd>Validated measurement forms with units, timestamps, sources, notes and measurement guidance.</dd>
+      <dt>Interactive Body</dt><dd>Interactive view of the cardiovascular, musculoskeletal, nervous/behavioral, immune and general systems.</dd>
+      <dt>Health Intelligence</dt><dd>Transparent rule-based health analysis and explainable alerts.</dd>
+      <dt>Mission Risk Center</dt><dd>NASA's five human-spaceflight hazards, related indicators, risks and preventive measures.</dd>
+      <dt>NASA Data (OSDR)</dt><dd>Visualization of real Inspiration4 laboratory data.</dd>
+      <dt>Astronaut Profile</dt><dd>Crew member profile, personal baselines and health history.</dd>
+      <dt>Sync &amp; Reports</dt><dd>Offline queue, synchronization controls, reports and exports.</dd>
+      <dt>Ground Console</dt><dd>Medical ground-support view of synchronized records and crew notes.</dd>
+      <dt>About &amp; References</dt><dd>Scientific references, project information and limitations.</dd></dl>
+      <h4>Academic management modules (added after the submission)</h4>
+      <p>Crew &amp; Missions · Measurements Database · Alert Review · Users · Audit — role-based management capabilities of the expanded academic implementation. <b>They are not part of the build submitted to NASA</b>, which is preserved unchanged at ${ext('nasa-2026/', '/nasa-2026/')}.</p>`],
+    ['engine', 'Health intelligence engine', `<p>The engine uses deterministic, explainable rules. It does <b>not</b> contain a machine-learning model and is not an AI diagnostic engine.</p>
+      <ol><li><b>Data quality</b> — detects implausible or inconsistent entries.</li><li><b>Missing data</b> — identifies missing measurements and monitoring gaps.</li><li><b>Documented reference ranges</b> — compares values with published references where applicable (AHA, ACC/AHA, WHO, CDC, AASM, ADA).</li><li><b>Personal baseline deviation</b> — flags deviations of two or more standard deviations from the astronaut's own baseline.</li><li><b>Seven-day trends</b> — identifies relevant changes over a seven-day window.</li></ol>
+      <p>Findings for the same indicator are consolidated into one alert that explains what changed, which indicator is involved, why it matters, a conservative suggested action, when to contact the medical team and which rule and reference support it.</p>
+      <p class="note">Engineering conventions — the 2 SD baseline rule, seven-day trends and the 36-hour missing-data window — require further clinical validation.</p>`],
+    ['nasa', 'NASA scientific data', `<p>The project uses NASA Open Science Data Repository (OSDR) data from the SpaceX Inspiration4 mission:</p>
+      <ul><li>${ext('https://osdr.nasa.gov/bio/repo/data/studies/OSD-575', 'OSD-575')} — Blood Serum Metabolic Panel and Immune/Cardiac Cytokine Arrays.</li><li>${ext('https://osdr.nasa.gov/bio/repo/data/studies/OSD-569', 'OSD-569')} — Whole Blood Measurements.</li></ul>
+      <p class="note">These are real laboratory measurements collected before and after the mission, not continuous in-flight vital signs. They come from four civilian crew members on a three-day mission; no causal conclusions are claimed from this small sample.</p>
+      <p>Hazard framework: ${ext('https://www.nasa.gov/hrp/hazards/', 'NASA Human Research Program — Five Hazards')}.</p>`],
+    ['offline', 'Offline-first operation', `<ul><li>Records are stored locally first.</li><li>Records enter a synchronization queue.</li><li>Synchronization happens during simulated communication windows (AOS/LOS).</li><li>Records are sent in batches of five.</li><li>Confirmation is required before a record leaves the queue.</li><li>Interrupted synchronization resumes at the next communication window.</li></ul>
+      <p><b>Original submission:</b> Earth communication and ground synchronization were simulated inside the browser (with versioning and conflict logging to prevent silent overwrites).<br><b>Academic integration:</b> the ground store is a Flask API hosted on Render that keeps shared records in SQLite.</p>
+      <p class="note">No real spacecraft, satellite, NASA ground station or flight medical system is connected.</p>`],
+    ['architecture', 'Technical architecture', `<div class="arch"><div><h4>Frontend</h4><p>HTML5 · CSS3 · Vanilla JavaScript · SVG charts · GitHub Pages</p></div><div><h4>Backend</h4><p>Python · Flask · REST API · Bearer-token authentication · Role-based access control · CORS restricted to this site</p></div><div><h4>Database</h4><p>SQLite — records persist while the backend database remains available</p></div><div><h4>Hosting</h4><p>GitHub Pages (frontend) · Render (Flask API)</p></div></div>
+      <p class="note">The backend is an academic extension added after the hackathon. The original NASA submission is a self-contained static application.</p>`],
+    ['tests', 'Validation and testing', `<p>Latest verified automated test runs (16 Nov 2026):</p>
+      <ul><li>Backend (pytest): <b>136 passed, 0 failed</b></li><li>Original JavaScript engine tests: <b>10/10 passed</b></li><li>End-to-end browser tests (Playwright, three roles): <b>84/84 checks passed (local test environment)</b></li></ul>
+      <p class="note">Automated tests verify software behavior only. ASTRA VITAL has not undergone clinical validation.</p>`],
+    ['real', 'What is real and what is simulated', `<div class="realsim"><div class="real"><h4>Real</h4><ul><li>NASA OSDR laboratory datasets OSD-575 and OSD-569</li><li>Measurements entered by users</li><li>Authentication and role-based permissions</li><li>Backend records while the service runs and the database remains available</li></ul></div>
+      <div class="sim"><h4>Simulated</h4><ul><li>Fictional demonstration astronauts</li><li>Synthetic demonstration vital signs</li><li>Mission scenario and generated health trends</li><li>Spacecraft communication delay</li><li>AOS/LOS communication windows</li><li>Original ground synchronization simulation</li></ul></div></div>`],
+    ['limits', 'Limitations and scientific responsibility', `<p>ASTRA VITAL is an educational prototype and is not a certified medical device. It:</p>
+      <ul><li>does not diagnose medical conditions;</li><li>does not replace flight surgeons or official medical protocols;</li><li>has not undergone clinical validation;</li><li>does not connect directly to certified medical sensors;</li><li>does not communicate with an actual spacecraft or NASA medical system.</li></ul>
+      <p>Thresholds and engineering conventions require clinical validation.</p>
+      <p class="note"><b>Render free-tier limitation:</b> the SQLite database runs on free hosting without persistent disk storage. Data may be lost when the service restarts, redeploys or suspends after inactivity; the demonstration accounts and synthetic reference data are recreated automatically when the database is initialized again.</p>`],
+    ['team', 'Team NYXARA NOVA', `<p>Trujillo, Peru.</p><dl class="defs"><dt>Etner Therry Rios Vasquez</dt><dd>Team Owner — coordination, architecture, product decisions and presentation.</dd><dt>Jeanfranco Alfredo Ibarra Kocfú</dt><dd>Technical implementation support and testing.</dd><dt>Darlin Saldaña Pinedo</dt><dd>Scientific research and documentation.</dd><dt>Máximo Fabrizzio Espinoza Peche</dt><dd>Testing, validation and presentation.</dd></dl>`],
+    ['ai', 'AI disclosure', `<p>The team used Claude, an AI assistant developed by Anthropic, to accelerate coding, testing, documentation and video assembly. The project idea, scope and decisions belong to the team. <b>No AI model runs inside ASTRA VITAL.</b></p>
+      <p>The video narration uses an AI-generated Kokoro TTS voice, and the emblem shown in the extended video is AI-generated.</p>
+      <p class="note">ASTRA VITAL is an independent project and is not developed, endorsed or validated by NASA.</p>`],
+    ['links', 'Project links', `<ul class="links"><li>Official application: ${ext('https://etner249.github.io/astra-vital/')}</li><li>Original NASA submission: ${ext('https://etner249.github.io/astra-vital/nasa-2026/')}</li><li>GitHub source (frontend): ${ext('https://github.com/Etner249/astra-vital')}</li><li>Backend source (Flask): ${ext('https://github.com/Etner249/astra-vital-flask-sqlite')}</li><li>Official 30-second demo: ${ext('https://youtu.be/lxITVao2RmQ')}</li><li>Extended presentation: ${ext('https://youtu.be/sz9qzXasEKc')}</li><li>NASA OSDR: ${ext('https://osdr.nasa.gov/bio/repo/data/studies/OSD-575', 'OSD-575')} · ${ext('https://osdr.nasa.gov/bio/repo/data/studies/OSD-569', 'OSD-569')} · NASA HRP: ${ext('https://www.nasa.gov/hrp/hazards/', 'Five Hazards')}</li></ul>`]
+  ];
+
   function renderLogin(message) {
-    document.title = 'Iniciar sesión · ASTRA VITAL';
-    document.getElementById('root').innerHTML = `<div class="login-page"><div class="login-wrap">
+    document.title = 'Sign in · ASTRA VITAL';
+    document.documentElement.lang = 'en';
+    document.getElementById('root').innerHTML = `<div class="login-page" lang="en"><div class="login-wrap">
       <header class="login-head"><div class="brand">${symbol(54)}<div><b style="font-size:20px">ASTRA VITAL</b><small>INTELLIGENT ASTRONAUT HEALTH MONITORING</small><div class="edition">ACADEMIC EDITION · FLASK + SQLITE API</div></div></div>
-        <div class="team-tag">Equipo <b>NYXARA NOVA</b> · NASA Space Apps Challenge 2026</div></header>
+        <div class="team-tag">Team <b>NYXARA NOVA</b> · NASA Space Apps Challenge 2026 · <i>We control the unseen.</i></div></header>
       <div class="login-grid">
-        <section class="card login-card" aria-labelledby="signin-h"><h2 id="signin-h">Iniciar sesión · Sign in</h2>
-          <div id="srv" class="srv" role="status"><span class="dot"></span><span>Conectando con el servidor en Render…</span></div>
-          ${message ? `<div class="flash" role="status">${esc(message)}</div>` : ''}
-          <form id="lf" novalidate><div class="field"><label for="email">Correo electrónico · Email</label><input id="email" name="email" type="email" autocomplete="username" placeholder="usuario@ejemplo.com"></div>
-            <div class="field"><label for="password">Contraseña · Password</label><input id="password" name="password" type="password" autocomplete="current-password"></div>
-            <div class="err" id="lerr" role="alert"></div><button class="btn primary block" id="lbtn" type="submit">Ingresar</button></form>
-          <ol class="steps" aria-label="Cómo ingresar"><li>Elige una cuenta de la sección <b>NASA Evaluator Access</b>.</li><li>Pulsa <b>Usar esta cuenta</b> (o copia el correo y la contraseña).</li><li>Pulsa <b>Ingresar</b>. Cada cuenta abre ASTRA VITAL con los permisos reales de su rol.</li></ol>
-          <p class="hint">Primera carga: el servidor gratuito de Render puede tardar hasta ~50 s en despertar. Versión enviada a la NASA (15/11/2026, sin cambios): <a href="nasa-2026/">/astra-vital/nasa-2026/</a></p>
+        <div class="auth-col">
+          <section class="card login-card" aria-labelledby="signin-h"><div class="eval-kicker">NASA EVALUATOR ACCESS</div><h2 id="signin-h">Sign in</h2>
+            <div id="srv" class="srv" role="status" aria-live="polite"><span class="dot"></span><span>Connecting to the ASTRA VITAL server on Render…</span></div>
+            ${message ? `<div class="flash" role="status">${esc(message)}</div>` : ''}
+            <form id="lf" novalidate><div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" placeholder="name@example.com"></div>
+              <div class="field"><label for="password">Password</label><div class="pw"><input id="password" name="password" type="password" autocomplete="current-password"><button type="button" class="pw-toggle" id="pwt" aria-controls="password" aria-pressed="false" aria-label="Show password" title="Show password">Show</button></div></div>
+              <div class="err" id="lerr" role="alert"></div><button class="btn primary block" id="lbtn" type="submit">Sign In</button></form>
+            <p class="hint">First load: the free Render server may need up to ~50 s to wake up. Version submitted to NASA (15 Nov 2026, unchanged): <a href="nasa-2026/">/astra-vital/nasa-2026/</a></p>
+          </section>
+          <section class="card evaluator" aria-labelledby="eval-h"><h2 id="eval-h">Demonstration accounts</h2>
+            <ol class="steps" aria-label="How to sign in"><li>Choose a role below.</li><li>Click <b>Use this account</b> (or copy the email and password).</li><li>Click <b>Sign In</b>. Each account opens ASTRA VITAL with the real permissions of its role.</li></ol>
+            <div class="demo-list" id="demo"><div class="empty">Loading accounts from the server…</div></div>
+            <div class="demo-warning" role="note"><b>Public demonstration accounts.</b> Anyone can use them: do not enter personal, medical or real data. All astronauts and vital signs are synthetic, and the database is reset when the server restarts. For safety, these accounts cannot manage users or delete the reference data.</div>
+          </section>
+        </div>
+        <section class="card briefing" aria-labelledby="brief-h"><div class="eval-kicker alt">PROJECT BRIEFING</div><h2 id="brief-h">About ASTRA VITAL</h2>
+          <p class="muted small">Everything evaluators, professors and technical reviewers need to know before signing in. Select a section to expand it.</p>
+          <div class="acc">${BRIEFING.map((s, i) => `<details id="b-${s[0]}"${i === 0 ? ' open' : ''}><summary>${esc(s[1])}</summary><div class="acc-body">${s[2]}</div></details>`).join('')}</div>
         </section>
-        <section class="card evaluator" aria-labelledby="eval-h"><div class="eval-kicker">NASA EVALUATOR ACCESS</div><h2 id="eval-h">Credenciales de demostración</h2>
-          <p class="muted small">Tres cuentas públicas, una por rol, para docentes, evaluadores y jurados de NASA Space Apps. Las credenciales las entrega el servidor.</p>
-          <div class="demo-list" id="demo"><div class="empty">Cargando cuentas desde el servidor…</div></div>
-          <div class="demo-warning" role="note"><b>Cuentas públicas de demostración.</b> Cualquier persona puede usarlas: no ingreses datos personales, médicos ni reales. Todos los astronautas y signos vitales son sintéticos y la base de datos se restablece cuando el servidor se reinicia. Por seguridad estas cuentas no pueden gestionar usuarios ni borrar los datos de referencia.</div>
-        </section></div>
-      <p class="disclaimer" style="text-align:center">Prototype for the 2026 NASA Space Apps Challenge by team NYXARA NOVA — academic edition with Flask + SQLite backend. Not an official NASA product. Not a medical device.</p></div></div>`;
+      </div>
+      <footer class="disclaimer login-foot">Educational prototype for the 2026 NASA Space Apps Challenge by team NYXARA NOVA (Trujillo, Peru) — academic edition with a Flask + SQLite backend. Not an official NASA product and not endorsed or validated by NASA. Not a medical device.</footer></div></div>`;
     const srv = $('#srv');
     const setSrv = (ok, txt) => { srv.className = 'srv ' + (ok === true ? 'ok' : ok === false ? 'bad' : ''); srv.lastElementChild.textContent = txt; };
     if (!API_BASE) setSrv(false, 'Build error: API URL not configured.');
-    const t0 = Date.now(); const slow = setTimeout(() => setSrv(null, 'Despertando el servidor gratuito de Render… (hasta ~50 s)'), 4000);
-    api('/health', { anon: true }).then(() => { clearTimeout(slow); setSrv(true, `Servidor en línea (${((Date.now() - t0) / 1000).toFixed(1)} s)`); return api('/demo-accounts', { anon: true }); })
-      .then(d => renderDemo(d.accounts)).catch(e => { clearTimeout(slow); setSrv(false, 'No se pudo contactar al servidor: ' + e.message + ' Recarga la página para reintentar.'); $('#demo').innerHTML = '<div class="empty">Las cuentas se muestran cuando el servidor responde.</div>'; });
+    const t0 = Date.now(); const slow = setTimeout(() => setSrv(null, 'Waking up the free Render server… (up to ~50 s)'), 4000);
+    api('/health', { anon: true }).then(() => { clearTimeout(slow); setSrv(true, `Server online (${((Date.now() - t0) / 1000).toFixed(1)} s)`); return api('/demo-accounts', { anon: true }); })
+      .then(d => renderDemo(d.accounts)).catch(e => { clearTimeout(slow); setSrv(false, 'Could not reach the server: ' + e.message + ' Reload the page to try again.'); $('#demo').innerHTML = '<div class="empty">The accounts appear when the server responds.</div>'; });
+    $('#pwt').onclick = () => { const p = $('#password'), show = p.type === 'password'; p.type = show ? 'text' : 'password'; const b = $('#pwt'); b.textContent = show ? 'Hide' : 'Show'; b.setAttribute('aria-pressed', String(show)); b.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); b.title = b.getAttribute('aria-label'); };
     $('#lf').onsubmit = async e => {
       e.preventDefault(); const email = $('#email').value.trim(), password = $('#password').value;
-      if (!email || !password) { $('#lerr').textContent = 'Ingresa correo y contraseña.'; return; }
-      $('#lbtn').disabled = true; $('#lbtn').textContent = 'Ingresando…'; $('#lerr').textContent = '';
+      if (!email || !password) { $('#lerr').textContent = 'Enter your email and password.'; return; }
+      $('#lbtn').disabled = true; $('#lbtn').textContent = 'Signing in…'; $('#lerr').textContent = '';
       try {
         const r = await api('/auth/login', { method: 'POST', body: { email, password }, anon: true });
         SESSION.token = r.token; SESSION.user = r.user; SESSION.ended = false; ssSet(TOKEN_KEY, r.token);
+        $('#lbtn').textContent = 'Signed in — loading…';
         await startApp();
-      } catch (err) { $('#lerr').textContent = err.status === 401 ? 'Correo o contraseña incorrectos.' : errText(err); $('#lbtn').disabled = false; $('#lbtn').textContent = 'Ingresar'; }
+      } catch (err) {
+        $('#lerr').textContent = err.status === 401 ? 'Incorrect email or password.' : err.status === 429 ? 'Too many failed attempts. Wait a few minutes and try again.' : err.network ? 'Could not reach the server. ' + err.message : errText(err);
+        $('#lbtn').disabled = false; $('#lbtn').textContent = 'Sign In';
+      }
     };
   }
   function renderDemo(accounts) {
     const box = $('#demo'); if (!box) return;
-    if (!accounts || !accounts.length) { box.innerHTML = '<div class="empty">Las cuentas de demostración están desactivadas en este servidor.</div>'; return; }
-    box.innerHTML = accounts.map(a => `<article class="demo-acc role-${esc(a.role)}"><div class="demo-top"><span class="role-badge">${esc(a.label)}</span><button type="button" class="btn small use-acc">Usar esta cuenta</button></div>
-      <dl><dt>Correo</dt><dd><code>${esc(a.email)}</code><button type="button" class="copy" data-copy="${esc(a.email)}" aria-label="Copiar correo de ${esc(a.label)}">Copiar</button></dd>
-      <dt>Contraseña</dt><dd><code>${esc(a.password)}</code><button type="button" class="copy" data-copy="${esc(a.password)}" aria-label="Copiar contraseña de ${esc(a.label)}">Copiar</button></dd></dl><p class="perm">${esc(a.can)}</p></article>`).join('');
+    if (!accounts || !accounts.length) { box.innerHTML = '<div class="empty">Demonstration accounts are disabled on this server.</div>'; return; }
+    box.innerHTML = accounts.map(a => { const en = DEMO_EN[a.role] || { label: (a.label_en || a.role).toUpperCase(), can: '' }; return `<article class="demo-acc role-${esc(a.role)}"><div class="demo-top"><span class="role-badge">${esc(en.label)}</span><button type="button" class="btn small use-acc" aria-label="Use the ${esc(en.label.toLowerCase())} account">Use this account</button></div>
+      <dl><dt>Email</dt><dd><code>${esc(a.email)}</code><button type="button" class="copy" data-copy="${esc(a.email)}" aria-label="Copy ${esc(en.label.toLowerCase())} email" title="Copy email">Copy</button></dd>
+      <dt>Password</dt><dd><code>${esc(a.password)}</code><button type="button" class="copy" data-copy="${esc(a.password)}" aria-label="Copy ${esc(en.label.toLowerCase())} password" title="Copy password">Copy</button></dd></dl><p class="perm">${esc(en.can)}</p></article>`; }).join('');
     $$('.demo-acc', box).forEach((card, i) => { $('.use-acc', card).onclick = () => { $('#email').value = accounts[i].email; $('#password').value = accounts[i].password; $$('.demo-acc', box).forEach(c => c.classList.remove('used')); card.classList.add('used'); $('#lbtn').focus(); }; });
-    $$('button.copy', box).forEach(b => b.onclick = () => copyText(b.dataset.copy).then(ok => { const old = b.textContent; b.textContent = ok ? 'Copiado ✓' : 'Copia manual'; b.classList.toggle('ok', ok); setTimeout(() => { b.textContent = old; b.classList.remove('ok'); }, 1600); }));
+    $$('button.copy', box).forEach(b => b.onclick = () => copyText(b.dataset.copy).then(ok => { const old = b.textContent; b.textContent = ok ? 'Copied ✓' : 'Copy manually'; b.classList.toggle('ok', ok); setTimeout(() => { b.textContent = old; b.classList.remove('ok'); }, 1600); }));
   }
   function copyText(text) {
     const fallback = () => { const t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; } t.remove(); return ok; };
@@ -1309,7 +1416,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
 
   async function startApp() {
     const root = document.getElementById('root');
-    if (!$('.app', root)) root.innerHTML = `<div class="login-page"><div class="login-wrap"><div class="card" style="max-width:420px;margin:80px auto;text-align:center">${symbol(54)}<p>Cargando ASTRA VITAL desde el servidor…</p></div></div></div>`;
+    if (!$('.app', root)) root.innerHTML = `<div class="login-page"><div class="login-wrap"><div class="card" style="max-width:420px;margin:80px auto;text-align:center">${symbol(54)}<p>Loading ASTRA VITAL from the server…</p></div></div></div>`;
     try {
       if (!SESSION.user) SESSION.user = (await api('/auth/me')).user;
       SESSION.astronauts = (await api('/astronauts')).items;
@@ -1319,7 +1426,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
       document.title = 'ASTRA VITAL — Astronaut Health Monitoring | NYXARA NOVA';
       shell(); window.removeEventListener('hashchange', route); window.addEventListener('hashchange', route); route();
       if (S.queue.length && S.link === 'AOS') syncNow(true);
-    } catch (e) { if (!SESSION.ended) endSession(e.network ? 'No se pudo contactar al servidor. ' + e.message : errText(e)); }
+    } catch (e) { if (!SESSION.ended) endSession(e.network ? 'Could not reach the server. ' + e.message : errText(e)); }
   }
   async function loadServerRecords(id) { return fromServer((await api(`/measurements?astronaut_id=${id}&limit=2000`)).items); }
   async function selectAstronaut(id, silent) {
@@ -1348,7 +1455,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 
   }
   async function logout() {
     try { await api('/auth/logout', { method: 'POST' }); } catch (e) { /* token may already be invalid */ }
-    endSession('Sesión cerrada. Los registros pendientes quedan guardados en este dispositivo.');
+    endSession('Signed out. Records still pending stay saved on this device.');
   }
 
   /* ---------------- Boot ---------------- */

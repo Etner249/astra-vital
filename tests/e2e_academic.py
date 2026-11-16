@@ -81,15 +81,33 @@ with sync_playwright() as p:
     t0 = time.time()
     pg.goto(BASE)
     pg.wait_for_selector("#srv.ok", timeout=90000)
-    check("Entry URL shows the NASA Evaluator Access login", "NASA EVALUATOR ACCESS" in pg.inner_text(".eval-kicker") and pg.locator("#lf").count() == 1, f"server ready in {time.time() - t0:.1f}s")
+    check("Entry URL shows the NASA Evaluator Access login", "NASA EVALUATOR ACCESS" in pg.inner_text(".login-card .eval-kicker") and pg.locator("#lf").count() == 1, f"server ready in {time.time() - t0:.1f}s")
     pg.wait_for_selector(".demo-acc", timeout=30000)
     cards = pg.locator(".demo-acc")
     check("Three demo accounts served by the API", cards.count() == 3, ", ".join(pg.locator(".demo-acc code").all_inner_texts()[::2]))
-    check("Public-demo warning visible", "no ingreses datos personales" in pg.inner_text(".demo-warning"))
+    check("Public-demo warning visible", "do not enter personal" in pg.inner_text(".demo-warning"))
+    # project briefing + English-only login
+    sections = pg.locator(".acc details")
+    check("Project briefing has 15 expandable sections", sections.count() == 15, ", ".join(pg.locator(".acc summary").all_inner_texts()))
+    for i in range(sections.count()):
+        sections.nth(i).locator("summary").click()
+    pg.wait_for_timeout(300)
+    full = pg.inner_text(".login-page")
+    spanish = [w for w in ("Iniciar", "Contraseña", "Correo", "Ingresar", "Usar esta", "Copiar", "cuentas", "servidor", "Equipo ", "sesión", "Versión") if w in full]
+    check("Login + briefing text is English only", not spanish, ",".join(spanish))
+    for must in ("not a certified medical device", "36-hour missing-data window", "not continuous in-flight vital signs", "not endorsed or validated by NASA", "No AI model runs inside ASTRA VITAL", "without persistent disk storage"):
+        check(f"Briefing states: {must}", must in full)
+    links = sorted(set(pg.eval_on_selector_all(".briefing a[href^='http']", "els => els.map(e => e.href)")))
+    check("Briefing external links are well-formed", all(re.match(r"^https://[^\s]+[^.,;]$", u) and not u.endswith("svg") for u in links), " ".join(links))
+    shot(pg, "e2e_03_login_briefing_expanded", True)
+    for i in range(sections.count()):
+        if i: sections.nth(i).locator("summary").click()
+    pg.click("#pwt"); check("Password visibility toggle shows the password", pg.get_attribute("#password", "type") == "text" and pg.inner_text("#pwt") == "Hide")
+    pg.click("#pwt"); check("Password visibility toggle hides it again", pg.get_attribute("#password", "type") == "password")
     shot(pg, "e2e_01_login")
     pg.fill("#email", "nobody@astravital.example"); pg.fill("#password", "wrong-password-1"); pg.click("#lbtn")
     pg.wait_for_function("() => document.querySelector('#lerr').textContent.length > 0", timeout=60000)
-    check("Wrong credentials rejected", "incorrectos" in pg.inner_text("#lerr"))
+    check("Wrong credentials rejected (English error)", pg.inner_text("#lerr") == "Incorrect email or password.")
 
     for role in ("operator", "doctor", "admin"):
         login(pg, role)
@@ -195,7 +213,7 @@ with sync_playwright() as p:
             shot(pg, "e2e_42_admin_audit")
             go(pg, "body"); shot(pg, "e2e_43_admin_body")
         logout(pg)
-        check(f"[{role}] sign out returns to login", pg.locator("#lf").count() == 1)
+        check(f"[{role}] sign out returns to login (English notice)", pg.locator("#lf").count() == 1 and pg.inner_text(".flash").startswith("Signed out."))
 
     # token is invalid after logout
     pg.goto(BASE + "nasa-2026/")
@@ -206,6 +224,11 @@ with sync_playwright() as p:
     m = b.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2).new_page()
     m.goto(BASE); m.wait_for_selector(".demo-acc", timeout=90000); m.wait_for_timeout(300)
     m.screenshot(path=str(OUT / "e2e_02_login_mobile.png"), full_page=True)
+    t = b.new_context(viewport={"width": 820, "height": 1180}).new_page()
+    t.goto(BASE); t.wait_for_selector(".demo-acc", timeout=90000); t.wait_for_timeout(300)
+    t.screenshot(path=str(OUT / "e2e_02b_login_tablet.png"), full_page=True)
+    ovf = m.evaluate("document.documentElement.scrollWidth > window.innerWidth + 1") or t.evaluate("document.documentElement.scrollWidth > window.innerWidth + 1")
+    check("No horizontal overflow on mobile (390 px) and tablet (820 px)", not ovf)
     b.close()
 
 failed = [r for r in results if not r[1]]
