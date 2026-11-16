@@ -5,6 +5,22 @@ Challenge: *Create Health Monitoring Software for Astronauts on Space Missions*
 *We control the unseen.*
 
 **Live app:** https://etner249.github.io/astra-vital/ · **30 s demo:** https://youtu.be/lxITVao2RmQ · **Full presentation:** https://youtu.be/sz9qzXasEKc
+**Version submitted to NASA (15/11/2026, unchanged):** https://etner249.github.io/astra-vital/nasa-2026/ · branch `backup/nasa-submission-2026-11-15` (commit `8df773b`)
+
+## Evaluator access (academic edition)
+The main URL opens **NASA Evaluator Access**: sign in with one of the three public demo accounts (shown on the page, served by the backend):
+
+| Role | Email | Password | Can do |
+|---|---|---|---|
+| Administrator | `admin.demo@astravital.example` | `AstraDemo-Admin-2026` | Everything; user management read-only |
+| Doctor / Specialist | `medico.demo@astravital.example` | `AstraDemo-Medico-2026` | Log/edit measurements, review alerts, reports |
+| Operator | `operador.demo@astravital.example` | `AstraDemo-Operador-2026` | View modules, log measurements |
+
+1. Open https://etner249.github.io/astra-vital/ (the free Render backend may take up to ~50 s to wake up).
+2. Click **Usar esta cuenta** on a role, then **Ingresar**.
+3. Use the ten original modules; Mission Control (Crew & Missions, Measurements Database, Alert Review, Users, Audit) appears according to the role.
+
+> Public demo accounts — do not enter personal, medical or real data. All astronaut data is synthetic and the database is reset when the free Render instance restarts.
 
 > Independent student prototype. **Not an official NASA product. Not a medical device** — it does not diagnose and does not replace flight surgeons or official protocols.
 
@@ -37,18 +53,37 @@ ASTRA VITAL helps astronauts on long-duration missions log health indicators, co
 ## Architecture
 ```
 src/engine.js   Health Intelligence Engine (pure functions, no DOM) — analyze(), baseline(), checkQuality(), mergeInto()
-src/app.js      UI, routing (#hash views), storage (localStorage), sync queue, ground store, reports, SVG charts
+src/app.js      UI, routing (#hash views), sign-in, API client, offline queue (localStorage), sync to the ground API, reports, SVG charts
 src/styles.css  Mission-control dark theme, responsive (desktop/tablet/mobile), print styles for reports
 data/           Real OSDR subset (CSV + JSON)
-build.py        Inlines everything into dist/index.html (single file, no external requests → works offline)
-tests/          engine.test.js (Node, 10 tests) · e2e.py (Playwright + Chrome, 27 checks)
+build.py        Inlines everything into index.html / dist/index.html; injects the API URL and a CSP limited to it
+nasa-2026/      Byte-identical copy of the version submitted to NASA (never rebuilt)
+tests/          engine.test.js (Node) · e2e.py (submitted version) · e2e_academic.py (academic edition, 3 roles, 72 checks)
 video/          capture.py (real screen captures) · render.sh (FFmpeg) · subtitles · narration script
 ```
 Why this stack: a single static file is the most reliable thing to demo in a hackathon, runs on any device without installation or internet, is easy for judges to open, and keeps the engine auditable.
 
+## Academic edition: architecture
+```
+GitHub Pages (etner249.github.io/astra-vital/)        Render (Flask + SQLite)
+  index.html  ── HTTPS + JSON, Bearer token ──▶   /api/v1  (repo Etner249/astra-vital-flask-sqlite)
+  · login, 10 original modules, Mission Control      · auth/login, logout, me (tokens hashed, 8 h, revocable)
+  · offline queue in localStorage (AOS/LOS)          · astronauts, missions, measurements (9 indicators), alerts, users, audit
+                                                     · same permission matrix + demo-account limits as the Flask UI
+```
+- No Flask code runs on GitHub Pages: the page is static; the backend runs on Render.
+- **Auth:** Bearer token kept in `sessionStorage` (no cookies → works across sites and CSRF does not apply). 401 returns to the login.
+- **CORS:** the API only answers browsers from the exact origin `https://etner249.github.io` (`CORS_ORIGINS`).
+- **CSP:** the page can only connect to the configured API origin.
+- **Ground store = API:** each record is saved locally first and sent in batches of 5 when the Earth link is AOS; the server validates, stores it in SQLite and generates alerts.
+- **Free Render plan:** the instance sleeps (first request ~50 s) and SQLite is recreated with synthetic demo data at every restart/deploy.
+
 ## Run
 ```bash
-python3 build.py                 # creates dist/index.html (also copied to index.html for GitHub Pages)
+python3 build.py                 # index.html for Pages, API = https://astra-vital-academic.onrender.com/api/v1
+AV_API_BASE=http://127.0.0.1:5056/api/v1 AV_OUT_DIR=/tmp/site/astra-vital python3 build.py   # local build
+# backend: see Etner249/astra-vital-flask-sqlite (CORS_ORIGINS=http://127.0.0.1:8080 for local tests)
+python3 tests/e2e_academic.py http://127.0.0.1:8080/astra-vital/ /tmp/shots
 open dist/index.html             # or any static server
 node tests/engine.test.js        # unit tests
 pip install playwright && python3 tests/e2e.py   # end-to-end (uses /usr/bin/google-chrome)
@@ -62,7 +97,7 @@ Deploy: enable GitHub Pages (branch `main`, root) — `index.html` at the repo r
 The team used an AI assistant (Claude, by Anthropic) to help write code, tests, documentation and to assemble the demo video. Idea, scope and decisions are the team's; health rules and sources were reviewed by the team. No AI model runs inside the app. Video narration is an AI-generated voice and the team emblem is AI-generated (both labeled); see docs/AI_DISCLOSURE.md.
 
 ## Limitations
-Not a medical device; manual entry only (no sensor integration); sync demonstrated between two local stores (no real ground server); engine conventions need clinical validation; OSDR data: n = 4, 3-day mission — no causal claims.
+Not a medical device; manual entry only (no sensor integration); the ground server runs on Render's free plan (sleeps when idle, data reset on restart; the submitted version at /nasa-2026/ keeps the original local-only sync); engine conventions need clinical validation; OSDR data: n = 4, 3-day mission — no causal claims.
 
 ## Team
 Etner Therry Rios Vasquez (owner) · Jeanfranco Alfredo Ibarra Kocfú · Darlin Saldaña Pinedo · Máximo Fabrizzio Espinoza Peche
